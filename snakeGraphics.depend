@@ -12,3 +12,16 @@
 	<cstdio>
 	<windows.h>
 
+1504962401 source:c:\github\snake_graphics\main.cpp
+	<iostream>
+	"class.h"
+
+1504968293 c:\github\snake_graphics\class.h
+	<graphics.h>
+	<vector>
+	<cctype>
+	<ctime>
+	<cstring>
+	<cstdio>
+	<windows.h>
+

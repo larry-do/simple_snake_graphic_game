@@ -109,50 +109,37 @@ bool snake::controlAndMove(){
         if(y<=0)
             body[0].setPos(x,y=704-16);
     }
+    if(GetAsyncKeyState(VK_UP)&&status!=DOWN) status=UP;
+    if(GetAsyncKeyState(VK_DOWN)&&status!=UP) status=DOWN;
+    if(GetAsyncKeyState(VK_LEFT)&&status!=RIGHT) status=LEFT;
+    if(GetAsyncKeyState(VK_RIGHT)&&status!=LEFT) status=RIGHT;
+    if(GetAsyncKeyState(VK_ESCAPE)){
+        setcolor(RED);
+        settextstyle(3,0,2);
+        outtextxy(width_window/2-100,height_window/2,"Back to menu...");
+        delay(2000);
+        body.clear();
+        return true;
+    }
+    if(GetAsyncKeyState(VK_RCONTROL)){
+        level+=10;
+        PlaySoundA("speedup.wav",NULL,SND_ASYNC);
+    }
+    if(GetAsyncKeyState(VK_LCONTROL)){
+        if(level>10) level-=10;
+        PlaySoundA("speedup.wav",NULL,SND_ASYNC);
+    }
+    if(GetAsyncKeyState(VK_TAB)){
+        if(gameType==BORDER) gameType=NO_BORDER;
+        else gameType=BORDER;
+        PlaySoundA("change.wav",NULL,SND_ASYNC);
+    }
     if(kbhit()){
         char key=getch();
-        if('W'==toupper(key)&&status!=DOWN) status=UP;
-        if('S'==toupper(key)&&status!=UP) status=DOWN;
-        if('A'==toupper(key)&&status!=RIGHT) status=LEFT;
-        if('D'==toupper(key)&&status!=LEFT) status=RIGHT;
-        if('P'==toupper(key)){
-            setcolor(RED);
-            settextstyle(3,0,2);
-            outtextxy(width_window/2-200,height_window/2,"Game paused. Press any key to continue...");
-            system("pause");
-        }
-        if('I'==toupper(key)){
-            setcolor(RED);
-            settextstyle(3,0,2);
-            outtextxy(width_window/2-100,height_window/2,"Restarting...");
-            delay(2000);
-            exit(42);
-        }
-        if('O'==toupper(key)){
-            setcolor(RED);
-            settextstyle(3,0,2);
-            outtextxy(width_window/2-100,height_window/2,"Back to menu...");
-            delay(2000);
-            body.clear();
-            return true;
-        }
         if('T'==toupper(key)){
             if(dotType==SQUARE) dotType=CIRCLE;
             else dotType=SQUARE;
             PlaySoundA("change.wav",NULL,SND_ASYNC);
-        }
-        if('R'==toupper(key)){
-            if(gameType==BORDER) gameType=NO_BORDER;
-            else gameType=BORDER;
-            PlaySoundA("change.wav",NULL,SND_ASYNC);
-        }
-        if('Y'==toupper(key)){
-            level+=10;
-            PlaySoundA("speedup.wav",NULL,SND_ASYNC);
-        }
-        if('U'==toupper(key)){
-            if(level>10) level-=10;
-            PlaySoundA("speedup.wav",NULL,SND_ASYNC);
         }
     }
     return false;
