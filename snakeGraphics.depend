@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1504962401 source:c:\users\dou ding nyat\desktop\snakegraphics\main.cpp
+	<iostream>
+	"class.h"
+
+1504962439 c:\users\dou ding nyat\desktop\snakegraphics\class.h
+	<graphics.h>
+	<vector>
+	<cctype>
+	<ctime>
+	<cstring>
+	<cstdio>
+	<windows.h>
+
