@@ -1,3 +1,4 @@
+#define _WIN32_WINNT 0x0500
 #include<graphics.h>
 #include<vector>
 #include<cctype>
@@ -5,17 +6,18 @@
 #include<cstring>
 #include<cstdio>
 #include<windows.h>
-#define height_window 704
-#define width_window 1280
-////////////////////////////////////////////////////////////////////////
+#define height_window 576
+#define width_window 960
+bool checkKey(int key){
+    return GetAsyncKeyState(key);
+}
+///////////////////////////////////////////////////////
 enum statusEnum {UP,DOWN,RIGHT,LEFT};
-enum gameTypeEnum {NO_BORDER,BORDER};
 enum dotTypeEnum {SQUARE,CIRCLE};
-////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
 int level = 50;
-gameTypeEnum gameType = NO_BORDER;
 dotTypeEnum dotType = SQUARE;
-////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
 class squareDot{
 private:
     int a;
@@ -25,6 +27,7 @@ public:
     void init(int _x,int _y,int _a,colors _color);
     int X();
     int Y();
+    colors kolor();
     void setPos(int _x,int _y);
     void show();
 };
@@ -39,6 +42,9 @@ int squareDot::X(){
 }
 int squareDot::Y(){
     return y;
+}
+colors squareDot::kolor(){
+    return color;
 }
 void squareDot::setPos(int _x,int _y){
     x=_x;
@@ -56,7 +62,7 @@ void squareDot::show(){
         circle(x,y,a+1);
     }
 }
-////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
 class fruit;
 class snake {
 private:
@@ -71,9 +77,9 @@ public:
     friend bool getScore(snake &a, fruit &b);
 };
 void snake::init(){
+    squareDot a;
     x=48;
     y=16;
-    squareDot a;
     a.init(x,y,15,LIGHTRED);
     body.push_back(a);
     a.init(x-32,y,15,LIGHTBLUE);
@@ -83,7 +89,7 @@ void snake::init(){
     status=RIGHT;
 }
 void snake::show(){
-    for(int i=0;i<body.size();i++){
+    for(unsigned int i=0;i<body.size();i++){
         body[i].show();
     }
 }
@@ -99,20 +105,18 @@ bool snake::controlAndMove(){
         body[0].setPos(x-=32,y);
     if(status==RIGHT)
         body[0].setPos(x+=32,y);
-    if(gameType == NO_BORDER){
-        if(x>=width_window)
-            body[0].setPos(x=16,y);
-        if(x<=0)
-            body[0].setPos(x=1280-16,y);
-        if(y>=height_window)
-            body[0].setPos(x,y=16);
-        if(y<=0)
-            body[0].setPos(x,y=704-16);
-    }
-    if(GetAsyncKeyState(VK_UP)&&status!=DOWN) status=UP;
-    if(GetAsyncKeyState(VK_DOWN)&&status!=UP) status=DOWN;
-    if(GetAsyncKeyState(VK_LEFT)&&status!=RIGHT) status=LEFT;
-    if(GetAsyncKeyState(VK_RIGHT)&&status!=LEFT) status=RIGHT;
+    if(x>=width_window)
+        body[0].setPos(x=16,y);
+    if(x<=0)
+        body[0].setPos(x=width_window-16,y);
+    if(y>=height_window)
+        body[0].setPos(x,y=16);
+    if(y<=0)
+        body[0].setPos(x,y=height_window-16);
+    if(checkKey(VK_RIGHT)&&status!=LEFT) status=RIGHT;
+    if(checkKey(VK_LEFT)&&status!=RIGHT) status=LEFT;
+    if(checkKey(VK_UP)&&status!=DOWN) status=UP;
+    if(checkKey(VK_DOWN)&&status!=UP) status=DOWN;
     if(GetAsyncKeyState(VK_ESCAPE)){
         setcolor(RED);
         settextstyle(3,0,2);
@@ -121,18 +125,13 @@ bool snake::controlAndMove(){
         body.clear();
         return true;
     }
-    if(GetAsyncKeyState(VK_RCONTROL)){
+    if(GetAsyncKeyState(VK_LCONTROL)){
         level+=10;
         PlaySoundA("speedup.wav",NULL,SND_ASYNC);
     }
-    if(GetAsyncKeyState(VK_LCONTROL)){
+    if(GetAsyncKeyState(VK_RCONTROL)){
         if(level>10) level-=10;
         PlaySoundA("speedup.wav",NULL,SND_ASYNC);
-    }
-    if(GetAsyncKeyState(VK_TAB)){
-        if(gameType==BORDER) gameType=NO_BORDER;
-        else gameType=BORDER;
-        PlaySoundA("change.wav",NULL,SND_ASYNC);
     }
     if(kbhit()){
         char key=getch();
@@ -141,34 +140,33 @@ bool snake::controlAndMove(){
             else dotType=SQUARE;
             PlaySoundA("change.wav",NULL,SND_ASYNC);
         }
+        if('D'==toupper(key)&&status!=LEFT) status=RIGHT;
+        if('A'==toupper(key)&&status!=RIGHT) status=LEFT;
+        if('W'==toupper(key)&&status!=DOWN) status=UP;
+        if('S'==toupper(key)&&status!=UP) status=DOWN;
     }
     return false;
 }
 bool snake::isDead(){
-    for(int i=1;i<body.size();i++){
+    for(unsigned int i=1;i<body.size();i++){
         if(x==body[i].X()&&y==body[i].Y()){
             PlaySoundA("dead.wav",NULL,SND_ASYNC);
-            return true;
-        }
-    }
-    if(gameType==BORDER){
-        if(x<=0||x>=width_window||y<=0||y>=height_window){
-            PlaySoundA("dead.wav",NULL,SND_ASYNC);
+            body.clear();
             return true;
         }
     }
     return false;
 }
-//////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
 class fruit:public squareDot{
 public:
-    void initFruit();
+    void initFruit(colors _color);
     friend bool getScore(snake &a, fruit &b);
 };
-void fruit::initFruit(){
-    int _x=16+(rand()%39)*32;
-    int _y=16+(rand()%21)*32;
-    squareDot::init(_x,_y,15,LIGHTGREEN);
+void fruit::initFruit(colors _color){
+    int _x=16+(rand()%29)*32;
+    int _y=16+(rand()%17)*32;
+    squareDot::init(_x,_y,15,_color);
 }
 ///////////////////////////////////////////////////////
 bool getScore(snake &a,fruit &b){
@@ -189,3 +187,4 @@ void showScore(int score){
     sprintf(a,"%d", score);
     outtext(a);
 }
+///////////////////////////////////////////////////////
