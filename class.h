@@ -127,18 +127,18 @@ bool snake::controlAndMove(){
     }
     if(GetAsyncKeyState(VK_LCONTROL)){
         level+=10;
-        PlaySoundA("speedup.wav",NULL,SND_ASYNC);
+        PlaySoundA("data/speedup.wav",NULL,SND_ASYNC);
     }
     if(GetAsyncKeyState(VK_RCONTROL)){
         if(level>10) level-=10;
-        PlaySoundA("speedup.wav",NULL,SND_ASYNC);
+        PlaySoundA("data/speedup.wav",NULL,SND_ASYNC);
     }
     if(kbhit()){
         char key=getch();
         if('T'==toupper(key)){
             if(dotType==SQUARE) dotType=CIRCLE;
             else dotType=SQUARE;
-            PlaySoundA("change.wav",NULL,SND_ASYNC);
+            PlaySoundA("data/change.wav",NULL,SND_ASYNC);
         }
         if('D'==toupper(key)&&status!=LEFT) status=RIGHT;
         if('A'==toupper(key)&&status!=RIGHT) status=LEFT;
@@ -150,7 +150,7 @@ bool snake::controlAndMove(){
 bool snake::isDead(){
     for(unsigned int i=1;i<body.size();i++){
         if(x==body[i].X()&&y==body[i].Y()){
-            PlaySoundA("dead.wav",NULL,SND_ASYNC);
+            PlaySoundA("data/dead.wav",NULL,SND_ASYNC);
             body.clear();
             return true;
         }
@@ -170,8 +170,8 @@ void fruit::initFruit(colors _color){
 }
 ///////////////////////////////////////////////////////
 bool getScore(snake &a,fruit &b){
-    if(a.x==b.X()&&a.y==b.Y()){
-        PlaySoundA("getscore.wav",NULL,SND_ASYNC);
+    if(a.x==b.X()&&a.y==b.Y()&&(b.kolor()==LIGHTCYAN||b.kolor()==LIGHTGREEN)){
+        PlaySoundA("data/getscore.wav",NULL,SND_ASYNC);
         squareDot c;
         c.init(0,0,15,LIGHTBLUE);
         a.body.push_back(c);

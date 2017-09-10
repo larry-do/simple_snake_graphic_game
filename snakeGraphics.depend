@@ -12,11 +12,11 @@
 	<cstdio>
 	<windows.h>
 
-1504991314 source:c:\github\snake_graphics\main.cpp
+1504991773 source:c:\github\snake_graphics\main.cpp
 	<iostream>
 	"class.h"
 
-1504991499 c:\github\snake_graphics\class.h
+1505030736 c:\github\snake_graphics\class.h
 	<graphics.h>
 	<vector>
 	<cctype>
