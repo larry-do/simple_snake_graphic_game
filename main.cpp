@@ -18,10 +18,12 @@ int main(){
         if(a.controlAndMove()){
             goto backToMenu;
         }
+        a.show();//mỗi lần làm gì với a thì in ra luôn. để khỏi trễ hình gây nhấp nháy
         if(getScore(a,b)){
             b.initFruit(LIGHTGREEN);
             score+=10;
         }
+        b.show();//mỗi lần làm gì với b thì in ra luôn. để khỏi trễ hình gây nhấp nháy
         if((score%70==0) && c.kolor()!=LIGHTCYAN && score!=0){
             c.initFruit(LIGHTCYAN);
         }
@@ -29,13 +31,11 @@ int main(){
             c.initFruit(CYAN);
             score+=30;
         }
+        if(c.kolor()==LIGHTCYAN) c.show();//mỗi lần làm gì với c thì in ra luôn. để khỏi trễ hình gây nhấp nháy
         if(a.isDead()){
             goto backToMenu;
         }
-        showScore(score);
-        if(c.kolor()==LIGHTCYAN) c.show();
-        b.show();
-        a.show();
+        showScore(score);//phải in ra sau cùng để không bị nhấp nháy snake. Tuy bị nhấp nháy score
         Sleep(level);
         cleardevice();
     }

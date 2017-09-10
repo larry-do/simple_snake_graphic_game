@@ -53,13 +53,13 @@ void squareDot::setPos(int _x,int _y){
 void squareDot::show(){
     if(dotType==SQUARE){
         setcolor(color);
-        rectangle(x-a-1,y-a-1,x+a+1,y+a+1);
+        //rectangle(x-a-1,y-a-1,x+a+1,y+a+1);
         rectangle(x-a,y-a,x+a,y+a);
     }
     else{
         setcolor(color);
         circle(x,y,a);
-        circle(x,y,a+1);
+        //circle(x,y,a+1);
     }
 }
 ///////////////////////////////////////////////////////
@@ -120,18 +120,10 @@ bool snake::controlAndMove(){
     if(GetAsyncKeyState(VK_ESCAPE)){
         setcolor(RED);
         settextstyle(3,0,2);
-        outtextxy(width_window/2-100,height_window/2,"Back to menu...");
+        outtextxy(width_window/2-100,height_window/2,"Restarting...");
         delay(2000);
         body.clear();
         return true;
-    }
-    if(GetAsyncKeyState(VK_LCONTROL)){
-        level+=10;
-        PlaySoundA("data/speedup.wav",NULL,SND_ASYNC);
-    }
-    if(GetAsyncKeyState(VK_RCONTROL)){
-        if(level>10) level-=10;
-        PlaySoundA("data/speedup.wav",NULL,SND_ASYNC);
     }
     if(kbhit()){
         char key=getch();
@@ -139,6 +131,14 @@ bool snake::controlAndMove(){
             if(dotType==SQUARE) dotType=CIRCLE;
             else dotType=SQUARE;
             PlaySoundA("data/change.wav",NULL,SND_ASYNC);
+        }
+        if('Q'==toupper(key)){
+            level+=10;
+            PlaySoundA("data/speedup.wav",NULL,SND_ASYNC);
+        }
+        if('E'==toupper(key)){
+            if(level>10) level-=10;
+            PlaySoundA("data/speedup.wav",NULL,SND_ASYNC);
         }
         if('D'==toupper(key)&&status!=LEFT) status=RIGHT;
         if('A'==toupper(key)&&status!=RIGHT) status=LEFT;
@@ -181,10 +181,14 @@ bool getScore(snake &a,fruit &b){
 }
 ///////////////////////////////////////////////////////
 void showScore(int score){
-    settextstyle(8,0,2);
+    setcolor(LIGHTCYAN);
+    settextstyle(8,0,1);
     outtext("Score: ");
     char a[10];
     sprintf(a,"%d", score);
     outtext(a);
+    outtextxy(0,18,"q to speed down");
+    outtextxy(0,36,"e to speed up");
+    outtextxy(0,54,"t to change snake");
 }
 ///////////////////////////////////////////////////////
